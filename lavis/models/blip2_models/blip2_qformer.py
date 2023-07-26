@@ -407,6 +407,7 @@ class Blip2Qformer(Blip2Base):
         # assert mode is one of "image", "text", "multimodal"
         assert mode in [
             "image",
+            "image_raw",
             "text",
             "multimodal",
         ], "mode must be one of 'image', 'text', 'multimodal'"
@@ -439,6 +440,15 @@ class Blip2Qformer(Blip2Base):
             image_embeds = query_output.last_hidden_state
             image_features = F.normalize(self.vision_proj(image_embeds), dim=-1)
 
+        elif mode == "image_raw":
+            assert (
+                image is not None
+            ), "Image is not provided for mode 'image' or 'multimodal'"
+            # return query features
+            with self.maybe_autocast():
+                image_embeds_frozen = self.ln_vision(self.visual_encoder(image))
+            image_embeds_frozen = image_embeds_frozen.float()
+         
         elif mode == "text":
             assert (
                 caption is not None

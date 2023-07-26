@@ -447,7 +447,7 @@ class Blip2Qformer(Blip2Base):
             # return query features
             with self.maybe_autocast():
                 image_embeds_frozen = self.ln_vision(self.visual_encoder(image))
-            image_embeds_frozen = image_embeds_frozen.float()
+            image_embeds = image_embeds_frozen.float()
          
         elif mode == "text":
             assert (
